@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group C Presentation | Interoperability and Digital FX</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f6f3ea;
+        --muted: #b9c3c1;
+        --panel: rgba(14, 21, 24, 0.78);
+        --line: rgba(246, 243, 234, 0.18);
+        --mint: #5ee0b7;
+        --cyan: #77c7ff;
+        --gold: #f6c762;
+        --rose: #ff8b8b;
+        --green: #8fdc6f;
+        --bg-a: #061214;
+        --bg-b: #14201f;
+        --bg-c: #1a1c2a;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 15% 12%, rgba(119, 199, 255, 0.18), transparent 34rem),
+          radial-gradient(circle at 88% 18%, rgba(246, 199, 98, 0.16), transparent 30rem),
+          linear-gradient(135deg, var(--bg-a), var(--bg-b) 48%, var(--bg-c));
+        color: var(--ink);
+        overflow: hidden;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .deck {
+        position: relative;
+        min-height: 100vh;
+        padding: 28px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        isolation: isolate;
+      }
+
+      .deck::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 82%);
+        z-index: -2;
+      }
+
+      .deck::after {
+        content: "";
+        position: fixed;
+        inset: -20%;
+        background:
+          conic-gradient(from 90deg at 50% 50%, rgba(94, 224, 183, 0.08), transparent, rgba(119, 199, 255, 0.1), transparent, rgba(246, 199, 98, 0.08));
+        animation: ambientSpin 24s linear infinite;
+        z-index: -3;
+      }
+
+      @keyframes ambientSpin {
+        to {
+          transform: rotate(1turn);
+        }
+      }
+
+      .topbar,
+      .bottombar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 48px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--muted);
+        letter-spacing: 0;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        color: var(--mint);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+      }
+
+      .progress-shell {
+        flex: 1;
+        max-width: 520px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .progress {
+        height: 100%;
+        width: var(--progress);
+        background: linear-gradient(90deg, var(--mint), var(--cyan), var(--gold));
+        border-radius: inherit;
+        transition: width 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .counter {
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        font-size: 14px;
+      }
+
+      .stage {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 0;
+      }
+
+      .slide {
+        width: min(1180px, 100%);
+        min-height: min(720px, calc(100vh - 160px));
+        display: grid;
+        gap: 28px;
+        align-content: center;
+        animation: slideIn 680ms cubic-bezier(0.18, 0.9, 0.2, 1) both;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.985);
+          filter: blur(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0);
+        }
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: max-content;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border: 1px solid rgba(94, 224, 183, 0.25);
+        border-radius: 999px;
+        color: var(--mint);
+        background: rgba(94, 224, 183, 0.08);
+        font-size: 13px;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 18px currentColor;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 960px;
+        font-size: clamp(48px, 7vw, 92px);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        max-width: 980px;
+        font-size: clamp(36px, 5vw, 66px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        font-size: 20px;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        max-width: 850px;
+        color: var(--muted);
+        font-size: clamp(18px, 2.2vw, 26px);
+        line-height: 1.42;
+      }
+
+      .hero-grid,
+      .two-col {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+        gap: 34px;
+        align-items: center;
+      }
+
+      .diagram {
+        position: relative;
+        min-height: 420px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+          rgba(10, 16, 18, 0.56);
+        overflow: hidden;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+      }
+
+      .diagram::before {
+        content: "";
+        position: absolute;
+        inset: 26px;
+        border: 1px dashed rgba(255, 255, 255, 0.16);
+        border-radius: 8px;
+      }
+
+      .node {
+        position: absolute;
+        width: 148px;
+        min-height: 88px;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(8, 16, 18, 0.82);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+        animation: float 5s ease-in-out infinite;
+      }
+
+      .node strong {
+        display: block;
+        font-size: 16px;
+      }
+
+      .node span {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .node-a {
+        left: 34px;
+        top: 60px;
+        color: var(--cyan);
+      }
+
+      .node-b {
+        right: 44px;
+        top: 72px;
+        color: var(--gold);
+        animation-delay: -1.4s;
+      }
+
+      .node-c {
+        left: 46px;
+        bottom: 64px;
+        color: var(--mint);
+        animation-delay: -2.8s;
+      }
+
+      .node-d {
+        right: 58px;
+        bottom: 56px;
+        color: var(--rose);
+        animation-delay: -3.6s;
+      }
+
+      @keyframes float {
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .hub {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 142px;
+        height: 142px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 18px;
+        color: var(--ink);
+        border: 1px solid rgba(94, 224, 183, 0.34);
+        background: radial-gradient(circle, rgba(94, 224, 183, 0.22), rgba(12, 18, 20, 0.9) 64%);
+        box-shadow: 0 0 50px rgba(94, 224, 183, 0.16), inset 0 0 40px rgba(94, 224, 183, 0.12);
+      }
+
+      .hub::before,
+      .hub::after {
+        content: "";
+        position: absolute;
+        inset: -18px;
+        border-radius: inherit;
+        border: 1px solid rgba(94, 224, 183, 0.2);
+        animation: pulse 2.8s ease-out infinite;
+      }
+
+      .hub::after {
+        animation-delay: 1.4s;
+      }
+
+      @keyframes pulse {
+        to {
+          opacity: 0;
+          transform: scale(1.26);
+        }
+      }
+
+      .beam {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 310px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(94, 224, 183, 0.85), transparent);
+        transform-origin: left center;
+        animation: shimmer 2.6s linear infinite;
+      }
+
+      .beam-1 {
+        transform: rotate(-34deg);
+      }
+
+      .beam-2 {
+        transform: rotate(34deg);
+      }
+
+      .beam-3 {
+        transform: rotate(146deg);
+      }
+
+      .beam-4 {
+        transform: rotate(214deg);
+      }
+
+      @keyframes shimmer {
+        50% {
+          opacity: 0.35;
+        }
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .info-card,
+      .script-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 22px;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+        backdrop-filter: blur(16px);
+      }
+
+      .info-card {
+        min-height: 168px;
+        animation: cardRise 620ms cubic-bezier(0.18, 0.9, 0.2, 1) both;
+        animation-delay: var(--delay);
+      }
+
+      @keyframes cardRise {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .info-card .number {
+        color: var(--mint);
+        font-size: 13px;
+        margin-bottom: 22px;
+      }
+
+      .info-card p {
+        margin-top: 12px;
+        color: var(--muted);
+        line-height: 1.45;
+        font-size: 16px;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .flow-step {
+        position: relative;
+        min-height: 160px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .flow-step::after {
+        content: "";
+        position: absolute;
+        right: -11px;
+        top: 50%;
+        width: 20px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--mint), transparent);
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .flow-step span {
+        color: var(--mint);
+        font-size: 13px;
+      }
+
+      .flow-step strong {
+        display: block;
+        margin-top: 22px;
+        font-size: 18px;
+        line-height: 1.25;
+      }
+
+      .flow-step p {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .split-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .list-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+        padding: 24px;
+      }
+
+      .list-panel h3 {
+        margin-bottom: 20px;
+      }
+
+      .pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .pill {
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.07);
+        font-size: 14px;
+      }
+
+      .risk-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .risk {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .risk-index {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        color: #061214;
+        background: var(--gold);
+        font-weight: 800;
+      }
+
+      .risk p {
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.38;
+        font-size: 15px;
+      }
+
+      .quote {
+        max-width: 980px;
+        color: var(--ink);
+        font-size: clamp(30px, 4.2vw, 58px);
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .script-card {
+        max-width: 980px;
+        color: var(--muted);
+        line-height: 1.58;
+        font-size: 18px;
+      }
+
+      .script-card strong {
+        color: var(--ink);
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .icon-btn {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+      }
+
+      .icon-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.28);
+      }
+
+      .icon-btn:disabled {
+        opacity: 0.38;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .dots {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border: 0;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.26);
+        cursor: pointer;
+        transition: width 220ms ease, background 220ms ease;
+      }
+
+      .dot.active {
+        width: 30px;
+        border-radius: 999px;
+        background: var(--mint);
+      }
+
+      .tagline {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .kbd {
+        color: var(--muted);
+      }
+
+      .accent-mint {
+        color: var(--mint);
+      }
+
+      .accent-cyan {
+        color: var(--cyan);
+      }
+
+      .accent-gold {
+        color: var(--gold);
+      }
+
+      .source-link {
+        color: var(--mint);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(94, 224, 183, 0.45);
+      }
+
+      @media (max-width: 900px) {
+        body {
+          overflow: auto;
+        }
+
+        .deck {
+          min-height: 100dvh;
+          padding: 18px;
+          gap: 20px;
+        }
+
+        .topbar,
+        .bottombar {
+          flex-wrap: wrap;
+        }
+
+        .progress-shell {
+          order: 3;
+          flex-basis: 100%;
+          max-width: none;
+        }
+
+        .slide {
+          min-height: auto;
+          padding: 24px 0;
+        }
+
+        .hero-grid,
+        .two-col,
+        .split-list {
+          grid-template-columns: 1fr;
+        }
+
+        .diagram {
+          min-height: 360px;
+        }
+
+        .card-grid,
+        .flow,
+        .risk-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-step::after {
+          display: none;
+        }
+
+        .tagline,
+        .kbd {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script>
+      const h = React.createElement;
+
+      const benefits = [
+        ["Near-instant settlement", "Smart contracts synchronise simulated FX swap settlement with MMF token issuance and redemption."],
+        ["Lower settlement risk", "The fund leg and FX leg move closer to atomic settlement: both complete, or neither does."],
+        ["Better liquidity control", "Corporate treasurers can access USD cash funds while managing FX exposure in real time."],
+        ["Operational efficiency", "Programmable workflows reduce manual reconciliation and fragmented records."],
+        ["Interoperability testing", "The PoC explores how tokenised funds and digital FX connect across different networks."],
+        ["Composable finance", "The value is not only tokenising a fund, but combining assets, FX, compliance and settlement logic."]
+      ];
+
+      const challenges = [
+        ["Interoperability", "Different DLT networks must communicate safely, reliably and synchronously."],
+        ["Legal finality", "On-chain completion must map clearly to legal settlement finality."],
+        ["Compliance", "KYC, AML, sanctions screening and investor eligibility remain essential."],
+        ["Privacy", "Auditability has to be balanced with client confidentiality."],
+        ["Legacy integration", "Fund accounting, NAV, custody and client systems still matter."],
+        ["Commercial scale", "Costs, liquidity, jurisdiction rules and client adoption must be solved."]
+      ];
+
+      const risks = [
+        ["Smart contract", "Audits, formal verification, transaction limits, emergency pause and monitoring."],
+        ["Cross-chain", "Trusted interoperability protocol, state confirmation, rollback and finality rules."],
+        ["FX settlement", "Bind both legs with conditional settlement, PvP/DvP logic and locked assets."],
+        ["Compliance", "Whitelisted wallets, permissioned tokens, off-chain KYC and sanctions screening."],
+        ["Legal/regulatory", "Clear legal documentation, token holder rights and dispute-resolution clauses."],
+        ["Operational", "Automated reconciliation, API integration, golden source and exception handling."],
+        ["Privacy", "Permissioned networks, data minimisation, off-chain sensitive data and ZK proofs."]
+      ];
+
+      const slides = [
+        {
+          kind: "hero",
+          eyebrow: "Group C · Interoperability and Digital FX",
+          title: "Fidelity tokenised MMF + Citi digital FX swap",
+          subtitle: "How smart contracts and interoperability protocols can synchronise fund subscription/redemption with FX hedging.",
+          note: "Opening line: This use case is about fixing the split between cross-currency fund investment and FX risk management."
+        },
+        {
+          kind: "problem",
+          eyebrow: "Question 1 · Problem Statement",
+          title: "The fund trade and the FX hedge are separated.",
+          subtitle: "A non-USD investor buying a USD money market fund usually has to handle the MMF transaction and the FX swap in different systems.",
+          cards: [
+            ["Timing mismatch", "Fund subscription/redemption and hedge execution may not settle at the same moment."],
+            ["Settlement risk", "One leg may complete while the other fails, creating market and liquidity exposure."],
+            ["Manual reconciliation", "Fund records, cash payments, FX records and settlement statuses are fragmented."]
+          ]
+        },
+        {
+          kind: "flow",
+          eyebrow: "The proposed solution",
+          title: "Make the workflow synchronised and programmable.",
+          subtitle: "Fidelity supplies the tokenised MMF side. Citi supplies the digital FX swap side. Smart contracts coordinate the transaction lifecycle.",
+          steps: [
+            ["01", "Non-USD cash", "Investor starts with SGD, EUR, GBP or another currency."],
+            ["02", "Digital FX swap", "FX leg manages currency exposure."],
+            ["03", "Smart contract", "Coordinates conditional settlement logic."],
+            ["04", "MMF token", "Issuance or redemption reflects fund interest."],
+            ["05", "Lifecycle record", "Status, permissions and ownership update on-chain."]
+          ]
+        },
+        {
+          kind: "benefits",
+          eyebrow: "Question 2 · Benefits",
+          title: "The benefits are speed, synchronisation and cleaner operations.",
+          items: benefits
+        },
+        {
+          kind: "challenges",
+          eyebrow: "Question 3 · Challenges",
+          title: "The hard part is not the token. It is making the whole financial workflow reliable.",
+          items: challenges
+        },
+        {
+          kind: "split",
+          eyebrow: "Question 4 · On-chain vs Off-chain",
+          title: "This is a hybrid model.",
+          leftTitle: "On-chain",
+          rightTitle: "Off-chain",
+          left: ["MMF token issuance/redemption", "Smart contract settlement logic", "Permission controls", "Cross-network messaging", "Lifecycle event records"],
+          right: ["KYC / AML / sanctions checks", "Legal agreements and ISDA terms", "NAV and fund accounting", "Custody of underlying assets", "Fiat payment rails"]
+        },
+        {
+          kind: "risks",
+          eyebrow: "Question 5 · Risks and mitigants",
+          title: "The main risks are technical, legal, operational and privacy-related.",
+          risks
+        },
+        {
+          kind: "script",
+          eyebrow: "5-minute speaking spine",
+          title: "A concise English version you can deliver.",
+          body: [
+            "Our use case is Interoperability and Digital FX by Fidelity International and Citi.",
+            "The problem is that cross-currency investment into tokenised money market funds is fragmented: fund subscription or redemption and FX hedging are usually handled separately.",
+            "The proposed solution combines a tokenised MMF with a digital FX swap, using smart contracts to synchronise settlement and interoperability protocols to connect networks.",
+            "The key benefits are faster settlement, lower settlement risk, better liquidity management, reduced reconciliation and a practical test of interoperability.",
+            "The solution is hybrid: token representation and settlement logic can sit on-chain, while identity, legal documents, NAV, fund accounting, custody and fiat payments remain off-chain.",
+            "The key takeaway is that tokenisation becomes more valuable when it is composable: tokenised funds, digital FX and programmable settlement can work as one integrated workflow."
+          ]
+        },
+        {
+          kind: "closing",
+          eyebrow: "Key takeaway",
+          title: "Not just tokenising a fund. Connecting financial workflows.",
+          subtitle: "Fidelity + Citi shows the next stage of tokenised finance: interoperability, synchronisation and programmable settlement across assets and currencies.",
+          source: "https://www.citigroup.com/global/news/press-release/2024/citi-and-fidelity-international-demonstrate-tokenized-money-market-fund-and-digital-foreign-exchange-swap-solution"
+        }
+      ];
+
+      function Diagram() {
+        return h("div", { className: "diagram", "aria-label": "Tokenised fund and digital FX workflow diagram" },
+          h("div", { className: "beam beam-1" }),
+          h("div", { className: "beam beam-2" }),
+          h("div", { className: "beam beam-3" }),
+          h("div", { className: "beam beam-4" }),
+          h("div", { className: "node node-a" }, h("strong", null, "Investor"), h("span", null, "Non-USD cash and liquidity needs")),
+          h("div", { className: "node node-b" }, h("strong", null, "Citi"), h("span", null, "Digital FX swap leg")),
+          h("div", { className: "node node-c" }, h("strong", null, "Fidelity"), h("span", null, "Tokenised MMF units")),
+          h("div", { className: "node node-d" }, h("strong", null, "Controls"), h("span", null, "KYC, permissions, finality")),
+          h("div", { className: "hub" }, h("strong", null, "Smart contract sync"))
+        );
+      }
+
+      function Slide({ slide }) {
+        if (slide.kind === "hero") {
+          return h("section", { className: "slide hero-grid" },
+            h("div", null,
+              h("div", { className: "eyebrow" }, slide.eyebrow),
+              h("h1", null, slide.title),
+              h("p", { className: "subtitle" }, slide.subtitle)
+            ),
+            h(Diagram)
+          );
+        }
+
+        if (slide.kind === "problem") {
+          return h("section", { className: "slide" },
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("h2", null, slide.title),
+            h("p", { className: "subtitle" }, slide.subtitle),
+            h("div", { className: "card-grid" },
+              slide.cards.map((card, index) =>
+                h("div", { className: "info-card", style: { "--delay": `${index * 110}ms` }, key: card[0] },
+                  h("div", { className: "number" }, `0${index + 1}`),
+                  h("h3", null, card[0]),
+                  h("p", null, card[1])
+                )
+              )
+            )
+          );
+        }
+
+        if (slide.kind === "flow") {
+          return h("section", { className: "slide" },
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("h2", null, slide.title),
+            h("p", { className: "subtitle" }, slide.subtitle),
+            h("div", { className: "flow" },
+              slide.steps.map(step =>
+                h("div", { className: "flow-step", key: step[0] },
+                  h("span", null, step[0]),
+                  h("strong", null, step[1]),
+                  h("p", null, step[2])
+                )
+              )
+            )
+          );
+        }
+
+        if (slide.kind === "benefits" || slide.kind === "challenges") {
+          return h("section", { className: "slide" },
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("h2", null, slide.title),
+            h("div", { className: "card-grid" },
+              slide.items.map((item, index) =>
+                h("div", { className: "info-card", style: { "--delay": `${index * 85}ms` }, key: item[0] },
+                  h("div", { className: "number" }, `${index + 1}`.padStart(2, "0")),
+                  h("h3", null, item[0]),
+                  h("p", null, item[1])
+                )
+              )
+            )
+          );
+        }
+
+        if (slide.kind === "split") {
+          return h("section", { className: "slide" },
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("h2", null, slide.title),
+            h("div", { className: "split-list" },
+              h("div", { className: "list-panel" },
+                h("h3", { className: "accent-mint" }, slide.leftTitle),
+                h("div", { className: "pill-list" }, slide.left.map(item => h("span", { className: "pill", key: item }, item)))
+              ),
+              h("div", { className: "list-panel" },
+                h("h3", { className: "accent-gold" }, slide.rightTitle),
+                h("div", { className: "pill-list" }, slide.right.map(item => h("span", { className: "pill", key: item }, item)))
+              )
+            ),
+            h("p", { className: "subtitle" }, "Blockchain handles asset representation, synchronisation and permissions; traditional systems handle identity, law and fund operations.")
+          );
+        }
+
+        if (slide.kind === "risks") {
+          return h("section", { className: "slide" },
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("h2", null, slide.title),
+            h("div", { className: "risk-grid" },
+              slide.risks.map((risk, index) =>
+                h("div", { className: "risk", key: risk[0] },
+                  h("div", { className: "risk-index" }, index + 1),
+                  h("div", null,
+                    h("h3", null, risk[0]),
+                    h("p", null, risk[1])
+                  )
+                )
+              )
+            )
+          );
+        }
+
+        if (slide.kind === "script") {
+          return h("section", { className: "slide" },
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("h2", null, slide.title),
+            h("div", { className: "script-card" },
+              slide.body.map((paragraph, index) =>
+                h("p", { key: paragraph, style: { marginTop: index ? "14px" : 0 } },
+                  index === 0 ? h("strong", null, paragraph) : paragraph
+                )
+              )
+            )
+          );
+        }
+
+        return h("section", { className: "slide two-col" },
+          h("div", null,
+            h("div", { className: "eyebrow" }, slide.eyebrow),
+            h("p", { className: "quote" }, slide.title),
+            h("p", { className: "subtitle", style: { marginTop: "24px" } }, slide.subtitle),
+            h("p", { className: "subtitle", style: { marginTop: "18px", fontSize: "16px" } },
+              "Source: ",
+              h("a", { className: "source-link", href: slide.source, target: "_blank", rel: "noreferrer" }, "Citi press release")
+            )
+          ),
+          h(Diagram)
+        );
+      }
+
+      function App() {
+        const [index, setIndex] = React.useState(0);
+        const current = slides[index];
+        const progress = `${((index + 1) / slides.length) * 100}%`;
+
+        const go = React.useCallback((next) => {
+          setIndex(Math.max(0, Math.min(slides.length - 1, next)));
+        }, []);
+
+        React.useEffect(() => {
+          const onKey = (event) => {
+            if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+              event.preventDefault();
+              go(index + 1);
+            }
+            if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) {
+              event.preventDefault();
+              go(index - 1);
+            }
+            if (event.key === "Home") go(0);
+            if (event.key === "End") go(slides.length - 1);
+          };
+          window.addEventListener("keydown", onKey);
+          return () => window.removeEventListener("keydown", onKey);
+        }, [go, index]);
+
+        return h("main", { className: "deck", style: { "--progress": progress } },
+          h("header", { className: "topbar" },
+            h("div", { className: "brand" },
+              h("div", { className: "brand-mark" }, "C"),
+              h("span", null, "SC6125 · Group C")
+            ),
+            h("div", { className: "progress-shell" }, h("div", { className: "progress" })),
+            h("div", { className: "counter" }, `${String(index + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`)
+          ),
+          h("div", { className: "stage" }, h(Slide, { key: index, slide: current })),
+          h("footer", { className: "bottombar" },
+            h("div", { className: "tagline" }, current.note || "Fidelity + Citi · Tokenised MMF · Digital FX swap"),
+            h("div", { className: "dots" },
+              slides.map((_, dotIndex) =>
+                h("button", {
+                  className: `dot ${dotIndex === index ? "active" : ""}`,
+                  onClick: () => go(dotIndex),
+                  "aria-label": `Go to slide ${dotIndex + 1}`,
+                  key: dotIndex
+                })
+              )
+            ),
+            h("div", { className: "controls" },
+              h("span", { className: "kbd" }, "← / →"),
+              h("button", { className: "icon-btn", onClick: () => go(index - 1), disabled: index === 0, "aria-label": "Previous slide" }, "‹"),
+              h("button", { className: "icon-btn", onClick: () => go(index + 1), disabled: index === slides.length - 1, "aria-label": "Next slide" }, "›")
+            )
+          )
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+    </script>
+  </body>
+</html>
